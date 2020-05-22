@@ -5,9 +5,10 @@ import com.sundar.reditclone.dto.SubredditDto;
 import com.sundar.reditclone.service.SubredditServices;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -16,20 +17,25 @@ import java.util.List;
 @Slf4j
 public class SubredditController {
 
-    private final SubredditServices subredditServices;
+    private final SubredditServices subredditService;
+
+    @PostMapping
+    public ResponseEntity<SubredditDto> createSubreddit(@RequestBody SubredditDto subredditDto) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(subredditService.save(subredditDto));
+    }
 
     @GetMapping
-    public List<SubredditDto> getAllSubreddits() {
-        return subredditServices.getAll();
+    public ResponseEntity<List<SubredditDto>> getAllSubreddits() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(subredditService.getAll());
     }
 
     @GetMapping("/{id}")
-    public SubredditDto getSubreddit(@PathVariable Long id) {
-        return subredditServices.getSubreddit(id);
-    }
-
-    @PostMapping
-    public SubredditDto create(@RequestBody @Valid SubredditDto subredditDto) {
-        return subredditServices.save(subredditDto);
+    public ResponseEntity<SubredditDto> getSubreddit(@PathVariable Long id) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(subredditService.getSubreddit(id));
     }
 }
